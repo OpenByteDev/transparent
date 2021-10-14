@@ -1,8 +1,15 @@
 [package]
 name = "transparent"
 version = "0.1.0"
-edition = "2021"
+description = "A crate for running processes on a virtual desktop."
+readme = "README.md"
+repository = "https://github.com/OpenByteDev/transparent" 
+documentation = "https://docs.rs/transparent"
+license = "MIT"
+authors = ["OpenByte <development.openbyte@gmail.com>"]
+edition = "2018"
 build = "build.rs"
+keywords = ["transparent", "headless", "hidden", "process", "virtual", "desktop", "program"]
 
 [target.'cfg(windows)'.dependencies]
 tempfile = "3.2"
