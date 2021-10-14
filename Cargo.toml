@@ -1,0 +1,12 @@
+[package]
+name = "transparent"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[target.'cfg(windows)'.dependencies]
+tempfile = "3.2"
+
+[build-dependencies]
+build-target = "0.3"
+cargo-emit = "0.2"

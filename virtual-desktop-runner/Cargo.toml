@@ -1,0 +1,15 @@
+[package]
+name = "virtual-desktop-runner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+windows = "0.21"
+widestring = "0.5"
+snailquote = "0.3"
+defer-lite = "1.0"
+ctrlc = { version = "3.2", features = ["termination"] }
+uuid = { version = "0.8", features = ["v4"] }
+
+[build-dependencies]
+windows = "0.21"
