@@ -24,7 +24,7 @@ fn main() {
     args.next().expect("Invalid command line provided.");
 
     let target_path = args.next().expect("Missing target app path.");
-    while let Some(arg) = args.next() {
+    for arg in args.by_ref() {
         if arg == "--" {
             break;
         }
