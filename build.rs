@@ -1,4 +1,4 @@
-#![feature(exit_status_error)]
+#![feature(exit_status_error, path_try_exists)]
 
 use core::fmt;
 use std::{
@@ -18,6 +18,8 @@ fn main() {
 
     let subcrate_name = "virtual-desktop-runner";
     let subcrate_dir = env::current_dir().unwrap().join(subcrate_name);
+
+    fs::copy(subcrate_dir.join("Cargo.toml.why-no-bin-deps"), subcrate_dir.join("Cargo.toml")).unwrap();
 
     let mut command = Command::new("cargo");
     command
@@ -46,6 +48,8 @@ fn main() {
         &out_dir.join(runner_executable_filename),
     )
     .unwrap();
+    
+    fs::remove_file(subcrate_dir.join("Cargo.toml")).unwrap();
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
