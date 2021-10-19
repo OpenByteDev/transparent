@@ -14,8 +14,9 @@ keywords = ["headless", "hidden", "process", "virtual", "desktop"]
 [target.'cfg(windows)'.dependencies]
 tempfile = "3.2"
 
-[build-dependencies]
+[target.'cfg(windows)'.build-dependencies]
 build-target = "0.3"
 cargo-emit = "0.2"
 zip = "0.5"
 gitignore = "1.0"
+path-absolutize = "3.0"
