@@ -91,8 +91,7 @@ fn create_archive_from_directory(archive_path: &Path, target_directory: &Path, o
     let archive_file = File::create(archive_path)?;
     let mut zip_writer = ZipWriter::new(archive_file);
 
-    let mut path_stack: Vec<PathBuf> = vec![];
-    path_stack.push(target_directory.to_path_buf());
+    let mut path_stack = vec![target_directory.to_path_buf()];
 
     let mut buffer = Vec::new();
 
