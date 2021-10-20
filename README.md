@@ -6,10 +6,10 @@
 [![dependency status](https://deps.rs/repo/github/openbytedev/transparent/status.svg)](https://deps.rs/repo/github/openbytedev/transparent)
 [![MIT](https://img.shields.io/crates/l/transparent.svg)](https://github.com/OpenByteDev/transparent/blob/master/LICENSE)
 
-A crate for running processes on a virtual desktop / X server environment.
+A crate for running processes on a virtual desktop / virtual X server environment.
 
 ## Usage
-This will spawn `some program` on a new virtual desktop / X server environment.
+This will spawn `some program` on a new virtual desktop / virtual X server environment.
 ```rust
 Command::new("some program")
     .spawn_transparent(&TransparentRunner::new())
