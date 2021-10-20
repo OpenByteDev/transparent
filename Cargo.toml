@@ -27,6 +27,7 @@ tempfile = "3.2"
 
 [features]
 default = []
+expose-impl = []
 __docs_rs = []
 
 [package.metadata.docs.rs]

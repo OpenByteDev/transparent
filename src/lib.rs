@@ -26,8 +26,6 @@ It is currently impossible to determine the specified [`Stdio`](https://doc.rust
 Licensed under the MIT license ([LICENSE](https://github.com/OpenByteDev/transparent/blob/master/LICENSE) or <http://opensource.org/licenses/MIT>)
 !*/
 
-#[cfg(windows)]
-mod windows;
 use std::{
     borrow::{Borrow, BorrowMut},
     io,
@@ -35,11 +33,17 @@ use std::{
     process::{Child, Command},
 };
 
+#[cfg(all(windows, not(feature = "expose-impl")))]
+mod windows;
+#[cfg(all(windows, feature = "expose-impl"))]
+pub mod windows;
 #[cfg(windows)]
 use windows as platform;
 
-#[cfg(unix)]
+#[cfg(all(unix, not(feature = "expose-impl")))]
 mod unix;
+#[cfg(all(unix, feature = "expose-impl"))]
+pub mod unix;
 #[cfg(unix)]
 use unix as platform;
 
