@@ -1,7 +1,7 @@
 [package]
 name = "transparent"
 version = "0.2.0"
-description = "A crate for running processes on a virtual desktop."
+description = "A crate for running processes on a virtual desktop / virtual X server environment."
 readme = "README.md"
 repository = "https://github.com/OpenByteDev/transparent" 
 documentation = "https://docs.rs/transparent"
