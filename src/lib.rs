@@ -39,6 +39,12 @@ impl TransparentChild {
     pub fn runner(&self) -> &TransparentRunner {
         &self.1
     }
+
+    delegate::delegate! {
+        to self.0 {
+            pub fn wait_with_output(self) -> io::Result<std::process::Output>;
+        }
+    }
 }
 
 impl AsRef<Child> for TransparentChild {

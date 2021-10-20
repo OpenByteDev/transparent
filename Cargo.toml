@@ -11,6 +11,9 @@ edition = "2018"
 build = "build.rs"
 keywords = ["headless", "hidden", "process", "virtual", "desktop"]
 
+[dependencies]
+delegate = "0.6"
+
 [target.'cfg(windows)'.dependencies]
 tempfile = "3.2"
 
