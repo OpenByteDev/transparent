@@ -1,8 +1,4 @@
-use std::{
-    env, fs,
-    path::{Path, PathBuf},
-    process::Command,
-};
+use std::{env, fs, path::{Path, PathBuf}, process::{Command, Stdio}};
 
 use build_target::Profile;
 use path_absolutize::Absolutize;
@@ -59,7 +55,7 @@ pub fn main() {
         }
     }
 
-    fs::rename(
+    fs::copy(
         &target_runner_crate_fake_config,
         &target_runner_crate_real_config,
     )
