@@ -12,10 +12,10 @@ use std::{
 #[cfg(windows)]
 use windows as platform;
 
-#[cfg(not(windows))]
-mod other;
-#[cfg(not(windows))]
-use other as platform;
+#[cfg(unix)]
+mod unix;
+#[cfg(unix)]
+use unix as platform;
 
 #[derive(Clone, Debug, Default)]
 pub struct TransparentRunner(platform::TransparentRunnerImpl);
