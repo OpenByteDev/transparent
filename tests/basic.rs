@@ -8,7 +8,8 @@ fn check_identical_output() {
 
     let mut cmd = if cfg!(windows) {
         let mut c = Command::new("powershell.exe");
-        c.arg("-Command").arg(format!("Write-Output '{}'", test_text));
+        c.arg("-Command")
+            .arg(format!("Write-Output '{}'", test_text));
         c
     } else {
         let mut c = Command::new("echo");
@@ -28,4 +29,3 @@ fn check_identical_output() {
     assert_eq!(transparent_output.stdout, opaque_output.stdout);
     assert_eq!(transparent_output.stderr, opaque_output.stderr);
 }
-

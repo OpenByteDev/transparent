@@ -24,7 +24,8 @@ pub fn main() {
 
     cargo_emit::rerun_if_changed!("{}", source_runner_crate_path.display());
 
-    let target_runner_crate_dir: Box<dyn AsRef<Path>> = if source_runner_crate_real_config.exists() {
+    let target_runner_crate_dir: Box<dyn AsRef<Path>> = if source_runner_crate_real_config.exists()
+    {
         Box::new(source_runner_crate_path)
     } else {
         let target_runner_crate_dir = tempfile::Builder::new()
@@ -85,7 +86,8 @@ pub fn main() {
     command.spawn().unwrap().wait().unwrap().exit_ok().unwrap();
 
     let runner_executable_filename = format!("{}.exe", runner_crate_name);
-    let runner_executable_path = target_runner_crate_dir.as_ref()
+    let runner_executable_path = target_runner_crate_dir
+        .as_ref()
         .as_ref()
         .join("target")
         .join(&target_triple)
