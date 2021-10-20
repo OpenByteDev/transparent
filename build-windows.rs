@@ -1,4 +1,4 @@
-use std::{env, fs, path::{Path, PathBuf}, process::{Command, Stdio}};
+use std::{env, fs, path::{Path, PathBuf}, process::Command};
 
 use build_target::Profile;
 use path_absolutize::Absolutize;
@@ -54,6 +54,7 @@ pub fn main() {
             }
         }
     }
+    drop(gitignore_filter);
 
     fs::copy(
         &target_runner_crate_fake_config,
