@@ -1,6 +1,6 @@
 use std::{
     io,
-    process::{Child, Command},
+    process::{Child, Command, Stdio},
 };
 
 #[derive(Clone, Debug, Default)]
@@ -11,7 +11,10 @@ impl TransparentRunnerImpl {
         let mut runner_command = Command::new("xvfb-run");
         runner_command
             .arg(command.get_program())
-            .args(command.get_args());
+            .args(command.get_args())
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::piped());
 
         for env in command.get_envs() {
             match env {
@@ -20,8 +23,10 @@ impl TransparentRunnerImpl {
             };
         }
 
-        if let Some(current_dir) = command.get_current_dir() {
-            runner_command.current_dir(current_dir);
+        if let Some(cd) = command.get_current_dir() {
+            runner_command.current_dir(cd);
+        } else {
+            runner_command.current_dir(std::env::current_dir()?);
         }
 
         runner_command.spawn()
