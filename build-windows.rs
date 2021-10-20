@@ -20,7 +20,10 @@ pub fn main() {
         .to_path_buf();
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let source_runner_crate_path = current_dir.join(runner_crate_name);
-    let target_runner_crate_dir = tempfile::TempDir::new().unwrap();
+    let target_runner_crate_dir = tempfile::Builder::new()
+        .prefix("virtual-desktop-runner-")
+        .tempdir()
+        .unwrap();
     let target_runner_crate_path = target_runner_crate_dir.path();
     let target_runner_crate_real_config = target_runner_crate_path.join("Cargo.toml");
     let target_runner_crate_fake_config =
@@ -37,7 +40,6 @@ pub fn main() {
             .unwrap_or(false)
     };
 
-    fs::create_dir_all(&target_runner_crate_dir).unwrap();
     for entry in WalkDir::new(&source_runner_crate_path)
         .into_iter()
         .filter_map(|e| e.ok())
