@@ -13,7 +13,7 @@ pub struct TransparentRunnerInner(Arc<SyncOnceCell<tempfile::TempPath>>);
 impl TransparentRunnerInner {
     fn write_runner_executable_to_disk() -> io::Result<tempfile::TempPath> {
         #[cfg(feature = "__docs_rs")]
-        unreachable!();
+        let bytes = [].as_ref();
         #[cfg(not(feature = "__docs_rs"))]
         let bytes = include_bytes!(concat!(env!("OUT_DIR"), "\\virtual-desktop-runner.exe"));
         let mut file = tempfile::Builder::new()
