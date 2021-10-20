@@ -1,5 +1,4 @@
-use std::mem::{self, MaybeUninit};
-use std::{env, ptr};
+use std::{mem::{self, MaybeUninit}, env, ptr};
 
 use defer_lite::defer;
 use uuid::Uuid;
@@ -31,12 +30,11 @@ fn main() {
     }
     let target_args = args;
 
-    let desktop_name =
+    let mut desktop_name =
         U16CString::from_str(format!("virtual-desktop-runner/{}", Uuid::new_v4())).unwrap();
-    let desktop_name_ptr = desktop_name.as_ptr() as *mut _;
     let desktop_handle = unsafe {
         CreateDesktopW(
-            PWSTR(desktop_name_ptr),
+            PWSTR(desktop_name.as_mut_ptr()),
             PWSTR::default(),
             ptr::null_mut(),
             0,
@@ -64,12 +62,9 @@ fn main() {
         command_line.push_str(&escaped_arg);
     }
 
-    // println!("Command line: {}", command_line);
-    // println!("Target Path: {}", target_path);
-
-    let wide_command_line =
+    let mut wide_command_line =
         U16CString::from_str(&command_line).expect("Failed to convert command line to widestring.");
-    let wide_target_path = U16CString::from_str(&target_path)
+    let mut wide_target_path = U16CString::from_str(&target_path)
         .expect("Failed to convert target app path to widestring.");
 
     let mut stdin_read = MaybeUninit::uninit();
@@ -147,7 +142,7 @@ fn main() {
     let startup_info = STARTUPINFOW {
         cb: mem::size_of::<STARTUPINFOW>() as _,
         lpReserved: PWSTR::default(),
-        lpDesktop: PWSTR(desktop_name_ptr),
+        lpDesktop: PWSTR(unsafe { desktop_name.as_mut_ptr() }),
         lpTitle: PWSTR::default(),
         dwX: 0,
         dwY: 0,
@@ -168,8 +163,8 @@ fn main() {
     let mut process_info = MaybeUninit::uninit();
     unsafe {
         CreateProcessW(
-            PWSTR(wide_target_path.as_ptr() as *mut _),
-            PWSTR(wide_command_line.as_ptr() as *mut _),
+            PWSTR(wide_target_path.as_mut_ptr()),
+            PWSTR(wide_command_line.as_mut_ptr()),
             ptr::null_mut(),
             ptr::null_mut(),
             false,
@@ -187,7 +182,7 @@ fn main() {
 
     unsafe { CloseHandle(process_info.hThread) }
         .ok()
-        .expect("Failed to close target thread initial thread handle.");
+        .expect("Failed to close initial thread handle of target.");
 
     defer! {
         unsafe { CloseHandle(process_info.hProcess) }.ok().expect("Failed to close target application handle.");

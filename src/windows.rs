@@ -8,12 +8,12 @@ use std::{
 };
 
 #[derive(Clone, Debug, Default)]
-pub struct TransparentRunnerInner(Arc<SyncOnceCell<tempfile::TempPath>>);
+pub struct TransparentRunnerImpl(Arc<SyncOnceCell<tempfile::TempPath>>);
 
-impl TransparentRunnerInner {
+impl TransparentRunnerImpl {
     fn write_runner_executable_to_disk() -> io::Result<tempfile::TempPath> {
         #[cfg(feature = "__docs_rs")]
-        let bytes = [].as_ref();
+        let bytes = &[];
         #[cfg(not(feature = "__docs_rs"))]
         let bytes = include_bytes!(concat!(env!("OUT_DIR"), "\\virtual-desktop-runner.exe"));
         let mut file = tempfile::Builder::new()
@@ -31,7 +31,7 @@ impl TransparentRunnerInner {
     }
 
     pub fn spawn_transparent(&self, command: &Command) -> io::Result<Child> {
-        let runner_path = dbg!(self.get_runner_executable_path()?);
+        let runner_path = self.get_runner_executable_path()?;
 
         let mut runner_command = Command::new(runner_path);
         runner_command

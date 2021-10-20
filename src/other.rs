@@ -4,9 +4,9 @@ use std::{
 };
 
 #[derive(Clone, Debug, Default)]
-pub struct TransparentRunnerInner;
+pub struct TransparentRunnerImpl;
 
-impl TransparentRunnerInner {
+impl TransparentRunnerImpl {
     pub fn spawn_transparent(&self, command: &Command) -> io::Result<Child> {
         let mut runner_command = Command::new("xvfb-run");
         runner_command
