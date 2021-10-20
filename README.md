@@ -10,7 +10,7 @@ A crate for running processes on a virtual desktop / X server environment.
 
 ## Usage
 This will spawn `some program` on a new virtual desktop / X server environment.
-```rs
+```rust
 Command::new("some program")
     .spawn_transparent(&TransparentRunner::new())
     .unwrap()
