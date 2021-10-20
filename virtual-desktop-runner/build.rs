@@ -1,7 +1,6 @@
 fn main() {
     windows::build! {
         Windows::Win32::{
-            Security::SECURITY_ATTRIBUTES,
             UI::{
                 DisplayDevices::DEVMODEW,
                 WindowsAndMessaging::DESKTOP_CREATEWINDOW
@@ -23,7 +22,6 @@ fn main() {
                     TerminateProcess
                 },
                 WindowsProgramming::INFINITE,
-                Pipes::CreatePipe,
                 StationsAndDesktops::{
                     HDESK,
                     CreateDesktopW,
@@ -34,7 +32,6 @@ fn main() {
         Windows::Win32::Foundation::{
             NTSTATUS,
             CloseHandle,
-            SetHandleInformation,
             STATUS_PENDING
         },
     };

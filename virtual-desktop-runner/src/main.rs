@@ -1,4 +1,9 @@
-use std::{mem::{self, MaybeUninit}, env, ptr};
+use std::os::windows::io::AsRawHandle;
+use std::{
+    env,
+    mem::{self, MaybeUninit},
+    ptr,
+};
 
 use defer_lite::defer;
 use uuid::Uuid;
@@ -7,8 +12,7 @@ use widestring::U16CString;
 windows::include_bindings!();
 use Windows::Win32::{
     Foundation::*,
-    Security::SECURITY_ATTRIBUTES,
-    System::{Pipes::*, StationsAndDesktops::*, Threading::*, WindowsProgramming::INFINITE},
+    System::{StationsAndDesktops::*, Threading::*, WindowsProgramming::INFINITE},
     UI::WindowsAndMessaging::DESKTOP_CREATEWINDOW,
 };
 
@@ -52,10 +56,7 @@ fn main() {
         unsafe { CloseDesktop(desktop_handle) }.ok().expect("Failed to close virtual desktop.")
     }
 
-    let mut command_line = snailquote::escape(&target_path)
-        .as_ref()
-        .trim_matches('\"')
-        .to_string();
+    let mut command_line = snailquote::escape(&target_path).to_string();
     for arg in target_args {
         let escaped_arg = snailquote::escape(&arg);
         command_line.push(' ');
@@ -64,80 +65,6 @@ fn main() {
 
     let mut wide_command_line =
         U16CString::from_str(&command_line).expect("Failed to convert command line to widestring.");
-    let mut wide_target_path = U16CString::from_str(&target_path)
-        .expect("Failed to convert target app path to widestring.");
-
-    let mut stdin_read = MaybeUninit::uninit();
-    let mut stdin_write = MaybeUninit::uninit();
-    let mut stdout_read = MaybeUninit::uninit();
-    let mut stdout_write = MaybeUninit::uninit();
-    let mut stderr_read = MaybeUninit::uninit();
-    let mut stderr_write = MaybeUninit::uninit();
-
-    let security_attributes = SECURITY_ATTRIBUTES {
-        nLength: mem::size_of::<SECURITY_ATTRIBUTES>() as _,
-        bInheritHandle: TRUE,
-        lpSecurityDescriptor: ptr::null_mut(),
-    };
-
-    unsafe {
-        CreatePipe(
-            stdin_read.as_mut_ptr(),
-            stdin_write.as_mut_ptr(),
-            &security_attributes,
-            0,
-        )
-    }
-    .ok()
-    .expect("Failed to create piped stdin");
-    let stdin_read = unsafe { stdin_read.assume_init() };
-    let stdin_write = unsafe { stdin_write.assume_init() };
-    defer! {
-        unsafe { CloseHandle(stdin_read) }.ok().expect("Failed to close piped stdin handle.");
-        unsafe { CloseHandle(stdin_write) }.ok().expect("Failed to close piped stdin handle.");
-    }
-    unsafe {
-        CreatePipe(
-            stdout_read.as_mut_ptr(),
-            stdout_write.as_mut_ptr(),
-            &security_attributes,
-            0,
-        )
-    }
-    .ok()
-    .expect("Failed to create piped stdout");
-    let stdout_read = unsafe { stdout_read.assume_init() };
-    let stdout_write = unsafe { stdout_write.assume_init() };
-    defer! {
-        unsafe { CloseHandle(stdout_read) }.ok().expect("Failed to close piped stdout handle.");
-        unsafe { CloseHandle(stdout_write) }.ok().expect("Failed to close piped stdout handle.");
-    }
-    unsafe {
-        CreatePipe(
-            stderr_read.as_mut_ptr(),
-            stderr_write.as_mut_ptr(),
-            &security_attributes,
-            0,
-        )
-    }
-    .ok()
-    .expect("Failed to create piped stderr");
-    let stderr_read = unsafe { stderr_read.assume_init() };
-    let stderr_write = unsafe { stderr_write.assume_init() };
-    defer! {
-        unsafe { CloseHandle(stderr_read) }.ok().expect("Failed to close piped stderr handle.");
-        unsafe { CloseHandle(stderr_write) }.ok().expect("Failed to close piped stderr handle.");
-    }
-
-    unsafe { SetHandleInformation(stdin_write, HANDLE_FLAG_INHERIT.0, HANDLE_FLAGS(0)) }
-        .ok()
-        .expect("Failed to make stdin handle uninheritable.");
-    unsafe { SetHandleInformation(stdout_read, HANDLE_FLAG_INHERIT.0, HANDLE_FLAGS(0)) }
-        .ok()
-        .expect("Failed to make stdout handle uninheritable.");
-    unsafe { SetHandleInformation(stderr_read, HANDLE_FLAG_INHERIT.0, HANDLE_FLAGS(0)) }
-        .ok()
-        .expect("Failed to make stderr handle uninheritable.");
 
     let startup_info = STARTUPINFOW {
         cb: mem::size_of::<STARTUPINFOW>() as _,
@@ -155,20 +82,20 @@ fn main() {
         wShowWindow: 0,
         cbReserved2: 0,
         lpReserved2: ptr::null_mut(),
-        hStdInput: stdin_read,
-        hStdOutput: stdout_write,
-        hStdError: stderr_write,
+        hStdInput: HANDLE(std::io::stdin().as_raw_handle() as isize),
+        hStdOutput: HANDLE(std::io::stdout().as_raw_handle() as isize),
+        hStdError: HANDLE(std::io::stderr().as_raw_handle() as isize),
     };
 
     let mut process_info = MaybeUninit::uninit();
     unsafe {
         CreateProcessW(
-            PWSTR(wide_target_path.as_mut_ptr()),
+            PWSTR::default(),
             PWSTR(wide_command_line.as_mut_ptr()),
             ptr::null_mut(),
             ptr::null_mut(),
-            false,
-            PROCESS_CREATION_FLAGS::default(),
+            true,
+            CREATE_UNICODE_ENVIRONMENT,
             ptr::null_mut(),
             PWSTR(ptr::null_mut()),
             &startup_info,
@@ -217,9 +144,13 @@ fn main() {
     }
 
     let mut exit_code = MaybeUninit::uninit();
-    unsafe { GetExitCodeProcess(process_info.hProcess, exit_code.as_mut_ptr()) }.ok().expect("Failed to get target application exit code.");
+    unsafe { GetExitCodeProcess(process_info.hProcess, exit_code.as_mut_ptr()) }
+        .ok()
+        .expect("Failed to get target application exit code.");
     let exit_code = unsafe { exit_code.assume_init() };
     if exit_code == STILL_ACTIVE.0 {
-        unsafe { TerminateProcess(process_info.hProcess, 0) }.ok().expect("Failed to terminate target application.");
+        unsafe { TerminateProcess(process_info.hProcess, 0) }
+            .ok()
+            .expect("Failed to terminate target application.");
     }
 }
