@@ -80,7 +80,7 @@ pub fn main() {
         .join(profile.as_str())
         .join(&runner_executable_filename);
 
-    fs::rename(
+    fs::copy(
         &runner_executable_path,
         &out_dir.join(runner_executable_filename),
     )
