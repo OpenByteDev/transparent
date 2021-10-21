@@ -11,6 +11,7 @@ impl TransparentRunnerImpl {
     pub fn spawn_transparent(&self, command: &Command) -> io::Result<Child> {
         let mut runner_command = Command::new("xvfb-run");
         runner_command
+            .arg("--auto-servernum")
             .arg(command.get_program())
             .args(command.get_args())
             .stdin(Stdio::piped())
