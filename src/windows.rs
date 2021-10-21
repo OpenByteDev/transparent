@@ -15,7 +15,10 @@ impl TransparentRunnerImpl {
         #[cfg(feature = "__docs_rs")]
         let bytes = &[];
         #[cfg(not(feature = "__docs_rs"))]
-        let bytes = include_bytes!(concat!(env!("OUT_DIR"), "\\virtual-desktop-runner.exe"));
+        let bytes = include_bytes!(concat!(
+            env!("OUT_DIR"),
+            "\\virtual-desktop-runner\\out\\virtual-desktop-runner.exe"
+        ));
         let mut file = tempfile::Builder::new()
             .prefix("transparent-runner-")
             .suffix(".exe")
