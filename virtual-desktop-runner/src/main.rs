@@ -154,7 +154,7 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
         exit_code = 0;
     }
 
-    return exit_code as i32;
+    exit_code as i32
 }
 
 fn main() {
