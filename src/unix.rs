@@ -3,6 +3,7 @@ use std::{
     process::{Child, Command, Stdio},
 };
 
+/// Unix-specific state required to run processes transparently.
 #[derive(Clone, Debug, Default)]
 pub struct TransparentRunnerImpl;
 

@@ -6,6 +6,7 @@ use std::{
     sync::Arc,
 };
 
+/// Windows-specific state required to run processes transparently.
 #[derive(Clone, Debug, Default)]
 pub struct TransparentRunnerImpl(Arc<SyncOnceCell<tempfile::TempPath>>);
 

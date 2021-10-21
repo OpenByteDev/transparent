@@ -20,7 +20,7 @@ Command::new("some program")
 
 ## How it works
 ### Windows
-On windows `transparent` uses [`CreateProcessW`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdesktopw) to create a new desktop and then spawns a child process using [`CreateProcessW`](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw) with [`lpStartupInfo.lpDesktop`](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow#syntax) set to the new desktop. (Actually a helper process is spawned which then in turn spawns the target process; see [`virtual-desktop-runner`](https://github.com/OpenByteDev/transparent/tree/master/virtual-desktop-runner)).
+On windows `transparent` uses [`CreateDesktopW`](https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-createdesktopw) to create a new desktop and then spawns a child process using [`CreateProcessW`](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-createprocessw) with [`lpStartupInfo.lpDesktop`](https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/ns-processthreadsapi-startupinfow#syntax) set to the new desktop. (Actually a helper process is spawned which then in turn spawns the target process; see [`virtual-desktop-runner`](https://github.com/OpenByteDev/transparent/tree/master/virtual-desktop-runner)).
 
 ### Unix
 On unix `transparent` uses [`xvfb-run`](http://manpages.ubuntu.com/manpages/trusty/man1/xvfb-run.1.html) which runs the target application in a virtual X server environment.
