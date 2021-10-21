@@ -111,8 +111,8 @@ fn build_runner_in_temp_dir() -> Result<(), Box<dyn Error>> {
         .unwrap();
     let target_runner_crate_path = target_runner_crate_dir.path();
 
-    copy_runner_crate_to(&target_runner_crate_path).unwrap();
-    build_runner_at_target(&target_runner_crate_path)
+    copy_runner_crate_to(target_runner_crate_path).unwrap();
+    build_runner_at_target(target_runner_crate_path)
 }
 
 fn out_dir() -> PathBuf {
@@ -122,11 +122,7 @@ fn out_dir() -> PathBuf {
 }
 
 fn current_dir() -> PathBuf {
-    env::current_dir()
-        .unwrap()
-        .canonicalize()
-        .unwrap()
-        .to_path_buf()
+    env::current_dir().unwrap().canonicalize().unwrap()
 }
 
 fn source_runner_crate_path() -> PathBuf {
