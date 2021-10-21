@@ -31,5 +31,4 @@ expose-impl = []
 __docs_rs = []
 
 [package.metadata.docs.rs]
-targets = ["x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu"]
 features = ["__docs_rs"]
