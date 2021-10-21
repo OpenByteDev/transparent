@@ -25,7 +25,7 @@ fn check_identical_output() {
         .unwrap();
     let opaque_output = cmd.spawn().unwrap().wait_with_output().unwrap();
 
-    assert_eq!(transparent_output.status.code(), opaque_output.status.code());
+    assert_eq!(transparent_output.status, opaque_output.status);
     assert_eq!(transparent_output.stdout, opaque_output.stdout);
     assert_eq!(transparent_output.stderr, opaque_output.stderr);
 }
