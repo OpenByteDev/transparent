@@ -5,6 +5,8 @@ A crate for running processes on a virtual desktop / virtual X server environmen
 ## Usage
 This will spawn `some program` on a virtual desktop / virtual X server environment.
 ```rust
+# use std::process::*;
+# use transparent::*;
 Command::new("some program")
     .spawn_transparent(&TransparentRunner::new())
     .unwrap()
