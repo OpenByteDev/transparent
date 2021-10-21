@@ -21,7 +21,6 @@ tempfile = "3.2"
 build-target = "0.3"
 cargo-emit = "0.2"
 gitignore = "1.0"
-path-absolutize = "3.0"
 walkdir = "2.3"
 tempfile = "3.2"
 
