@@ -21,8 +21,7 @@ const STILL_ACTIVE: NTSTATUS = STATUS_PENDING;
 const TRUE: BOOL = BOOL(1);
 const FALSE: BOOL = BOOL(0);
 
-fn main() {
-    let mut args = env::args();
+fn run(mut args: impl Iterator<Item = String>) -> i32 {
     // skip program name
     args.next().expect("Invalid command line provided.");
 
@@ -147,10 +146,18 @@ fn main() {
     unsafe { GetExitCodeProcess(process_info.hProcess, exit_code.as_mut_ptr()) }
         .ok()
         .expect("Failed to get target application exit code.");
-    let exit_code = unsafe { exit_code.assume_init() };
+    let mut exit_code = unsafe { exit_code.assume_init() };
     if exit_code == STILL_ACTIVE.0 {
         unsafe { TerminateProcess(process_info.hProcess, 0) }
             .ok()
             .expect("Failed to terminate target application.");
+        exit_code = 0;
     }
+
+    return exit_code as i32;
+}
+
+fn main() {
+    let exit_code = run(env::args());
+    std::process::exit(exit_code);
 }
