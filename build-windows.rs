@@ -13,7 +13,6 @@ use walkdir::WalkDir;
 const RUNNER_CRATE_NAME: &str = "virtual-desktop-runner";
 
 pub fn main() {
-    dbg!(env::vars().collect::<Vec<_>>());
     cargo_emit::rerun_if_changed!("{}", source_runner_crate_path().display());
 
     build_runner_inplace()
