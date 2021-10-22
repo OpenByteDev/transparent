@@ -123,7 +123,8 @@ fn out_dir() -> PathBuf {
 }
 
 fn current_dir() -> PathBuf {
-    env::current_dir().unwrap()
+    env::current_dir()
+        .unwrap()
         .absolutize()
         .unwrap()
         .into_owned()
