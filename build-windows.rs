@@ -7,6 +7,7 @@ use std::{
 };
 
 use build_target::Profile;
+use path_absolutize::Absolutize;
 use walkdir::WalkDir;
 
 const RUNNER_CRATE_NAME: &str = "virtual-desktop-runner";
@@ -117,17 +118,22 @@ fn build_runner_in_temp_dir() -> Result<(), Box<dyn Error>> {
 
 fn out_dir() -> PathBuf {
     PathBuf::from(env::var("OUT_DIR").unwrap())
-        .canonicalize()
+        .absolutize()
         .unwrap()
+        .into_owned()
 }
 
 fn current_dir() -> PathBuf {
-    env::current_dir().unwrap().canonicalize().unwrap()
+    env::current_dir().unwrap()
+        .absolutize()
+        .unwrap()
+        .into_owned()
 }
 
 fn source_runner_crate_path() -> PathBuf {
     current_dir()
         .join(RUNNER_CRATE_NAME)
-        .canonicalize()
+        .absolutize()
         .unwrap()
+        .into_owned()
 }
