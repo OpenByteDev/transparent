@@ -34,7 +34,7 @@ fn check_identical_output() {
 fn check_identical_non_zero_exit_code() {
     let mut cmd = if cfg!(windows) {
         let mut c = Command::new("powershell.exe");
-        c.arg("-Command").arg("&"); // Invalid command to make PS fail
+        c.arg("-Command").arg("§"); // Invalid command to make PS fail
         c
     } else {
         Command::new("false")
