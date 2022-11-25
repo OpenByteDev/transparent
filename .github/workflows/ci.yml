@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        toolchain: ["nightly"]
+        toolchain: ["stable", "nightly"]
         target: ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc", "i686-pc-windows-msvc"]
         include:
           - target: x86_64-unknown-linux-gnu
