@@ -38,7 +38,7 @@ fn build_runner_at_target(runner_crate_path: &Path) -> Result<(), Box<dyn Error>
 
     command.spawn()?.wait()?.exit_ok()?;
 
-    return Ok(());
+    Ok(())
 }
 
 fn copy_runner_crate_to(target_crate_path: &Path) -> Result<(), Box<dyn Error>> {
