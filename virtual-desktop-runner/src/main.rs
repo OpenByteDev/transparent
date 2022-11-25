@@ -8,15 +8,14 @@ use std::{
 use defer_lite::defer;
 use uuid::Uuid;
 use widestring::U16CString;
+use windows::Win32::Foundation::{NTSTATUS, WAIT_OBJECT_0, STATUS_PENDING, WIN32_ERROR, BOOL, HANDLE, CloseHandle, WAIT_ABANDONED, WAIT_TIMEOUT, WAIT_FAILED};
+use windows::Win32::System::StationsAndDesktops::{CreateDesktopW, DESKTOP_CONTROL_FLAGS, CloseDesktop};
+use windows::Win32::System::SystemServices::DESKTOP_CREATEWINDOW;
+use windows::Win32::System::Threading::{STARTUPINFOW, STARTF_USESTDHANDLES, CREATE_UNICODE_ENVIRONMENT, CreateProcessW, CreateEventW, SetEvent, WaitForMultipleObjects, GetExitCodeProcess, TerminateProcess};
+use windows::Win32::System::WindowsProgramming::INFINITE;
+use windows::core::{PWSTR, PCWSTR};
 
-windows::include_bindings!();
-use Windows::Win32::{
-    Foundation::*,
-    System::{StationsAndDesktops::*, Threading::*, WindowsProgramming::INFINITE},
-    UI::WindowsAndMessaging::DESKTOP_CREATEWINDOW,
-};
-
-const WAIT_OBJECT_1: WAIT_RETURN_CAUSE = WAIT_RETURN_CAUSE(WAIT_OBJECT_0.0 + 1);
+const WAIT_OBJECT_1: WIN32_ERROR = WIN32_ERROR(WAIT_OBJECT_0.0 + 1);
 const STILL_ACTIVE: NTSTATUS = STATUS_PENDING;
 const TRUE: BOOL = BOOL(1);
 const FALSE: BOOL = BOOL(0);
@@ -37,20 +36,15 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
         U16CString::from_str(format!("virtual-desktop-runner/{}", Uuid::new_v4())).unwrap();
     let desktop_handle = unsafe {
         CreateDesktopW(
-            PWSTR(desktop_name.as_mut_ptr()),
-            PWSTR::default(),
-            ptr::null_mut(),
-            0,
-            DESKTOP_CREATEWINDOW as _,
-            ptr::null_mut(),
+            PCWSTR::from_raw(desktop_name.as_mut_ptr()),
+            None,
+            None,
+            DESKTOP_CONTROL_FLAGS::default(),
+            DESKTOP_CREATEWINDOW.0,
+            None,
         )
-    };
-    if desktop_handle.0 == 0 {
-        panic!(
-            "Failed to create virtual desktop: {:#?}",
-            windows::Error::from_win32()
-        );
-    }
+    }.expect("Failed to create virtual desktop.");
+
     defer! {
         unsafe { CloseDesktop(desktop_handle) }.ok().expect("Failed to close virtual desktop.")
     }
@@ -67,9 +61,9 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
 
     let startup_info = STARTUPINFOW {
         cb: mem::size_of::<STARTUPINFOW>() as _,
-        lpReserved: PWSTR::default(),
-        lpDesktop: PWSTR(unsafe { desktop_name.as_mut_ptr() }),
-        lpTitle: PWSTR::default(),
+        lpReserved: PWSTR::null(),
+        lpDesktop: PWSTR(desktop_name.as_mut_ptr()),
+        lpTitle: PWSTR::null(),
         dwX: 0,
         dwY: 0,
         dwXSize: 0,
@@ -89,14 +83,14 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
     let mut process_info = MaybeUninit::uninit();
     unsafe {
         CreateProcessW(
-            PWSTR::default(),
-            PWSTR(wide_command_line.as_mut_ptr()),
-            ptr::null_mut(),
-            ptr::null_mut(),
+            PCWSTR::null(),
+            PWSTR::from_raw(wide_command_line.as_mut_ptr()),
+            None,
+            None,
             true,
             CREATE_UNICODE_ENVIRONMENT,
-            ptr::null_mut(),
-            PWSTR(ptr::null_mut()),
+            None,
+            None,
             &startup_info,
             process_info.as_mut_ptr(),
         )
@@ -114,7 +108,8 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
         unsafe { CloseHandle(process_info.hProcess) }.ok().expect("Failed to close target application handle.");
     }
 
-    let cancel_event = unsafe { CreateEventW(ptr::null_mut(), TRUE, FALSE, PWSTR::default()) };
+    let cancel_event = unsafe { CreateEventW(None, TRUE, FALSE, PCWSTR::null()) }
+        .expect("Failed to create cancel event.");
 
     ctrlc::set_handler(move || {
         unsafe { SetEvent(cancel_event) }
@@ -125,8 +120,7 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
 
     let wait_result = unsafe {
         WaitForMultipleObjects(
-            2,
-            [process_info.hProcess, cancel_event].as_ptr(),
+            &[process_info.hProcess, cancel_event],
             FALSE,
             INFINITE,
         )
@@ -137,7 +131,7 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
         WAIT_TIMEOUT => unreachable!(),
         WAIT_FAILED => panic!(
             "Failed to wait for target app exit: {:#?}",
-            windows::Error::from_win32()
+            windows::core::Error::from_win32()
         ),
         _ => unreachable!(),
     }
@@ -147,7 +141,7 @@ fn run(mut args: impl Iterator<Item = String>) -> i32 {
         .ok()
         .expect("Failed to get target application exit code.");
     let mut exit_code = unsafe { exit_code.assume_init() };
-    if exit_code == STILL_ACTIVE.0 {
+    if exit_code == STILL_ACTIVE.0 as _ {
         unsafe { TerminateProcess(process_info.hProcess, 0) }
             .ok()
             .expect("Failed to terminate target application.");

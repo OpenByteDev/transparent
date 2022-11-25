@@ -4,12 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-windows = "0.21"
-widestring = "0.5"
+windows = { version = "0.43", features = [
+    "Win32_Foundation", "Win32_Security", "Win32_System_Threading",
+    "Win32_System_SystemServices", "Win32_System_StationsAndDesktops", "Win32_Graphics_Gdi",
+    "Win32_System_WindowsProgramming"
+] }
+widestring = "1.0"
 snailquote = "0.3"
 defer-lite = "1.0"
 ctrlc = { version = "3.2", features = ["termination"] }
-uuid = { version = "0.8", features = ["v4"] }
-
-[build-dependencies]
-windows = "0.21"
+uuid = { version = "1.2", features = ["v4"] }

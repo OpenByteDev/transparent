@@ -74,7 +74,7 @@ fn copy_runner_crate_to(target_crate_path: &Path) -> Result<(), Box<dyn Error>> 
             fs::create_dir(&target_path).unwrap();
         } else {
             assert!(entry.file_type().is_file());
-            fs::copy(&source_path, &target_path).unwrap();
+            fs::copy(source_path, &target_path).unwrap();
         }
     }
 

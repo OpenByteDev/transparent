@@ -1,14 +1,15 @@
 use std::{
     io::{self, Write},
-    lazy::SyncOnceCell,
     path::Path,
     process::{Child, Command, Stdio},
     sync::Arc,
 };
 
+use once_cell::sync::OnceCell;
+
 /// Windows-specific state required to run processes transparently.
 #[derive(Clone, Debug, Default)]
-pub struct TransparentRunnerImpl(Arc<SyncOnceCell<tempfile::TempPath>>);
+pub struct TransparentRunnerImpl(Arc<OnceCell<tempfile::TempPath>>);
 
 impl TransparentRunnerImpl {
     fn write_runner_executable_to_disk() -> io::Result<tempfile::TempPath> {

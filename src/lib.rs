@@ -1,4 +1,3 @@
-#![feature(once_cell)]
 /*!
 A crate for running processes on a virtual desktop / virtual X server environment.
 
