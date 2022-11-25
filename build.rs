@@ -1,3 +1,5 @@
+#![feature(exit_status_error)]
+
 #[cfg(windows)]
 #[path = "build-windows.rs"]
 mod windows;

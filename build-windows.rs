@@ -36,12 +36,9 @@ fn build_runner_at_target(runner_crate_path: &Path) -> Result<(), Box<dyn Error>
         command.arg("--release");
     }
 
-    let status = command.spawn()?.wait()?;
-    if !status.success() {
-        return Err(format!("cargo build failed with code {:?}", status.code()).into());
-    }
+    command.spawn()?.wait()?.exit_ok()?;
 
-    Ok(())
+    return Ok(());
 }
 
 fn copy_runner_crate_to(target_crate_path: &Path) -> Result<(), Box<dyn Error>> {

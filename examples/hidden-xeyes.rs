@@ -1,12 +1,15 @@
+#![feature(exit_status_error)]
+
 use std::process::Command;
 
 use transparent::{CommandExt, TransparentRunner};
 
 fn main() {
-    let status = Command::new("xeyes")
+    Command::new("xeyes")
         .spawn_transparent(&TransparentRunner::new())
         .unwrap()
         .wait()
+        .unwrap()
+        .exit_ok()
         .unwrap();
-    assert!(status.success());
 }
