@@ -12,19 +12,19 @@ build = "build.rs"
 keywords = ["headless", "hidden", "process", "virtual", "desktop"]
 
 [dependencies]
-delegate = "0.8"
+delegate = "0.9"
 
 [target.'cfg(windows)'.dependencies]
-tempfile = "3.3"
-once_cell = "1.16"
+tempfile = "3.6"
+once_cell = "1.18"
 
 [target.'cfg(windows)'.build-dependencies]
 build-target = "0.4"
 cargo-emit = "0.2"
 gitignore = "1.0"
 walkdir = "2.3"
-tempfile = "3.3"
-path-absolutize = "3.0"
+tempfile = "3.6"
+path-absolutize = "3.1"
 
 [features]
 default = []
