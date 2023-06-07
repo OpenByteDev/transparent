@@ -55,6 +55,7 @@ pub struct TransparentRunner(platform::TransparentRunnerImpl);
 impl TransparentRunner {
     /// Creates a new [`TransparentRunner`].
     pub fn new() -> Self {
+        #[allow(clippy::default_constructed_unit_structs)]
         Self(platform::TransparentRunnerImpl::default())
     }
 
