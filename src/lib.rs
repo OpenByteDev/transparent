@@ -1,3 +1,5 @@
+#![cfg_attr(windows, feature(once_cell_try))]
+
 /*!
 A crate for running processes on a virtual desktop / virtual X server environment.
 
