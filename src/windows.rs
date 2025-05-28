@@ -2,7 +2,7 @@ use std::{
     io::{self, Write},
     path::Path,
     process::{Child, Command, Stdio},
-    sync::{Arc, OnceLock}
+    sync::{Arc, OnceLock},
 };
 
 /// Windows-specific state required to run processes transparently.
