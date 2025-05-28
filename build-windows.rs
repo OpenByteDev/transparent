@@ -88,7 +88,7 @@ fn copy_runner_crate_to(target_crate_path: &Path) -> Result<(), Box<dyn Error>> 
 }
 
 fn build_runner_inplace() -> Result<(), Box<dyn Error>> {
-    println!("Building {} inplace...", RUNNER_CRATE_NAME);
+    println!("Building {RUNNER_CRATE_NAME} inplace...");
     let runner_crate_real_config = source_runner_crate_path().join("Cargo.toml");
     if !runner_crate_real_config.exists() {
         return Err("Inplace Cargo.toml not present.".into());
@@ -97,16 +97,16 @@ fn build_runner_inplace() -> Result<(), Box<dyn Error>> {
 }
 
 fn build_runner_in_out_dir() -> Result<(), Box<dyn Error>> {
-    println!("Building {} in out dir...", RUNNER_CRATE_NAME);
+    println!("Building {RUNNER_CRATE_NAME} in out dir...");
     let target_runner_crate_path = out_dir().join(RUNNER_CRATE_NAME).join("crate");
     copy_runner_crate_to(&target_runner_crate_path).unwrap();
     build_runner_at_target(&target_runner_crate_path)
 }
 
 fn build_runner_in_temp_dir() -> Result<(), Box<dyn Error>> {
-    println!("Building {} in temp dir...", RUNNER_CRATE_NAME);
+    println!("Building {RUNNER_CRATE_NAME} in temp dir...");
     let target_runner_crate_dir = tempfile::Builder::new()
-        .prefix(&format!("{}-", RUNNER_CRATE_NAME))
+        .prefix(&format!("{RUNNER_CRATE_NAME}-"))
         .tempdir()
         .unwrap();
     let target_runner_crate_path = target_runner_crate_dir.path();
