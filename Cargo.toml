@@ -11,17 +11,17 @@ edition = "2021"
 keywords = ["headless", "hidden", "process", "virtual", "desktop"]
 
 [dependencies]
-delegate = "0.10"
+delegate = "0.13"
 
 [target.'cfg(windows)'.dependencies]
-tempfile = "3.7"
+tempfile = "3.16"
 
 [target.'cfg(windows)'.build-dependencies]
 build-target = "0.4"
 cargo-emit = "0.2"
 gitignore = "1.0"
-walkdir = "2.3"
-tempfile = "3.7"
+walkdir = "2.5"
+tempfile = "3.16"
 path-absolutize = "3.1"
 
 [features]
