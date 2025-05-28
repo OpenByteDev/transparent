@@ -11,9 +11,9 @@ pub struct TransparentRunnerImpl(Arc<OnceLock<tempfile::TempPath>>);
 
 impl TransparentRunnerImpl {
     fn write_runner_executable_to_disk() -> io::Result<tempfile::TempPath> {
-        #[cfg(feature = "__docs_rs")]
+        #[cfg(docsrs)]
         let bytes = &[];
-        #[cfg(not(feature = "__docs_rs"))]
+        #[cfg(not(docsrs))]
         let bytes = include_bytes!(concat!(
             env!("OUT_DIR"),
             "\\virtual-desktop-runner\\out\\virtual-desktop-runner.exe"

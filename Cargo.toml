@@ -27,7 +27,6 @@ path-absolutize = "3.1"
 [features]
 default = []
 expose-impl = []
-__docs_rs = []
 
 [package.metadata.docs.rs]
-features = ["__docs_rs"]
+rustdoc-args = ["--cfg", "docsrs"]
