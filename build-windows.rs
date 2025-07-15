@@ -26,13 +26,13 @@ fn build_runner_at_target(runner_crate_path: &Path) -> Result<(), Box<dyn Error>
     command
         .arg("build")
         .arg("--target")
-        .arg(build_target::target_triple().unwrap())
+        .arg(build_target::target_triple())
         .arg("-Z")
         .arg("unstable-options")
         .arg("--out-dir")
         .arg(out_dir().join(RUNNER_CRATE_NAME).join("out"))
         .current_dir(runner_crate_path);
-    if Profile::current().unwrap() == Profile::Release {
+    if Profile::current() == Profile::Release {
         command.arg("--release");
     }
 

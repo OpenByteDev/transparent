@@ -14,14 +14,14 @@ keywords = ["headless", "hidden", "process", "virtual", "desktop"]
 delegate = "0.13"
 
 [target.'cfg(windows)'.dependencies]
-tempfile = "3.16"
+tempfile = "3.20"
 
 [target.'cfg(windows)'.build-dependencies]
-build-target = "0.4"
+build-target = "0.8"
 cargo-emit = "0.2"
 gitignore = "1.0"
 walkdir = "2.5"
-tempfile = "3.16"
+tempfile = "3.20"
 path-absolutize = "3.1"
 
 [features]
